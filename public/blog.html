@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blog Detail</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+  <div class="blog-detail" id="blogDetail">
+    <!-- Blog details loaded from JS -->
+  </div>
+
+  <script>
+    const blog = JSON.parse(localStorage.getItem('currentBlog'));
+    const div = document.getElementById('blogDetail');
+    div.innerHTML = `
+      <img src="${blog.img}" alt="">
+      <h2>${blog.title}</h2>
+      <p><b>Author:</b> ${blog.author} | ${blog.date}</p>
+      <p>${blog.content}</p>
+    `;
+  </script>
+</body>
+</html>
