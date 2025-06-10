@@ -39,7 +39,7 @@ function cards(blogs) {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
-      <img src="${blog.cover_img}" alt="Blog Image">
+      <img src="${blog.cover_img_path}" alt="Blog Image">
       <div class="card-content">
         <h3>${blog.title}</h3>
         <p><b>Author:</b> ${blog.author}</p>
@@ -47,9 +47,9 @@ function cards(blogs) {
         <p>${blog.content.slice(0, 60)}...</p>
       </div>
       <div class="card-buttons">
-        <button onclick="viewBlog(${blog.id})">Learn More</button>
-        ${user === 'admin' ? `<button onclick="editBlog(${blog.id})">Edit</button>
-                              <button onclick="deleteBlog(${blog.id})">Delete</button>` : ''}
+        <button onclick="viewBlog(${blog,blog._id})">Learn More</button>
+        ${user === 'admin' ? `<button onclick="editBlog(${blog._id})">Edit</button>
+                              <button onclick="deleteBlog(${blog._id})">Delete</button>` : ''}
       </div>
     `;
             blogContainer.appendChild(card);
@@ -58,7 +58,7 @@ function cards(blogs) {
 }
 
 // Handle Learn More
-function viewBlog(id) {
+function viewBlog(blogs,id) {
     const blog = blogs.find(b => b.id === id);
     localStorage.setItem('currentBlog', JSON.stringify(blog));
     window.location.href = 'blog.html';
