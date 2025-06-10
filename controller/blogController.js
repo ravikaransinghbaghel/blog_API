@@ -15,7 +15,7 @@ export const postBlog = async (req, res) => {
             author,
             title,
             content,
-            cover_img_path: `https://blog-api-yn22.onrender.com/cover_img/${req.file.filename}`,
+            cover_img_path: req.file.path,
             cover_img_name: req.file.filename,
         });
 

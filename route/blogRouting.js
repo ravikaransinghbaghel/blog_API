@@ -1,5 +1,5 @@
 import express from 'express';
-import upload from '../middleware/img_middle.js'
+import {upload} from '../middleware/img_middle.js'
 import { deleteBlog, getBlog, isAdmin, logoutAdmin, postBlog, putBlog } from '../controller/blogController.js';
 import { isAdminverify } from '../middleware/isAdmin.js';
 
