@@ -9,7 +9,7 @@ export const postBlog = async (req, res) => {
     if (!author || !title || !content) {
         return res.status(400).json({ error: "All fields are required" });
     }
-
+    console.log('Cloudinary image URL:', req.file?.path);
     try {
         const newBlog = new blog({
             author,
