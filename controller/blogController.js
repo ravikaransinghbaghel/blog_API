@@ -1,6 +1,7 @@
 import blog from "../model/blog.js";
 import admin from "../model/admin.js";
 import jwt from 'jsonwebtoken';
+import { uploadImg } from './cloudinaryImg.js'
 
 
 export const postBlog = async (req, res) => {
@@ -9,17 +10,17 @@ export const postBlog = async (req, res) => {
     if (!author || !title || !content) {
         return res.status(400).json({ error: "All fields are required" });
     }
-    console.log('Cloudinary image URL:', req.file, ' \n url', req.file?.url);
+
+    const imageUrl = uploadImg(req.file.path)
+   
     try {
         const newBlog = new blog({
             author,
             title,
             content,
-            cover_img_path: req.file.path,
+            cover_img_path: imageUrl,
 
         });
-
-        const imageUrl = req.file;
 
         await newBlog.save();
         res.status(200).json({ massage: 'send the data successfull', imageUrl });
