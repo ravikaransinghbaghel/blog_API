@@ -9,20 +9,20 @@ export const postBlog = async (req, res) => {
     if (!author || !title || !content) {
         return res.status(400).json({ error: "All fields are required" });
     }
-    console.log('Cloudinary image URL:', req.file,' \n url', req.file?.url);
+    console.log('Cloudinary image URL:', req.file, ' \n url', req.file?.url);
     try {
         const newBlog = new blog({
             author,
             title,
             content,
             cover_img_path: req.file.path,
-            cover_img_name: req.file.filename,
+
         });
 
         const imageUrl = req.file;
 
         await newBlog.save();
-        res.status(200).json({ massage: ' successfull', imageUrl });
+        res.status(200).json({ massage: 'send the data successfull', imageUrl });
 
     } catch (err) {
         console.error(err);
@@ -53,6 +53,7 @@ export const putBlog = async (req, res) => {
         res.status(500).json({ error: "Error fetching blogs" });
     }
 };
+
 export const deleteBlog = async (req, res) => {
     const id = req.params.id;
 

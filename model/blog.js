@@ -18,10 +18,7 @@ const blogScheema = new mongoose.Schema({
         type: String,
         require: true
     },
-    cover_img_name: {
-        type: String,
-        require: true
-    },
+
 }, { timestamps: true });
 
 export default mongoose.model('Blog', blogScheema);
