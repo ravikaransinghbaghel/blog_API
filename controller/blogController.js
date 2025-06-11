@@ -9,7 +9,7 @@ export const postBlog = async (req, res) => {
     if (!author || !title || !content) {
         return res.status(400).json({ error: "All fields are required" });
     }
-    console.log('Cloudinary image URL:', req.file?.path);
+    console.log('Cloudinary image URL:', req.file?.path ,' \n url', req.file?.url);
     try {
         const newBlog = new blog({
             author,
@@ -19,8 +19,10 @@ export const postBlog = async (req, res) => {
             cover_img_name: req.file.filename,
         });
 
+        const imageUrl = req.file?.path || req.file?.url;
+
         await newBlog.save();
-        res.status(200).json({ massage: 'send the data successfull' });
+        res.status(200).json({ massage: 'send the data successfull', imageUrl });
 
     } catch (err) {
         console.error(err);
