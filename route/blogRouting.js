@@ -5,7 +5,7 @@ import { isAdminverify } from '../middleware/isAdmin.js';
 
 const router = express.Router();
 
-router.post('/isadmin', isAdmin)
+router.post('/isAdmin', isAdmin)
 router.get('/blogs', getBlog);
 router.post('/blogs', upload.single('cover_img'), postBlog);
 router.put('/update/:id', isAdminverify, putBlog);

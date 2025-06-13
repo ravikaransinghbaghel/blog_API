@@ -1,7 +1,7 @@
 import blog from "../model/blog.js";
 import admin from "../model/admin.js";
 import jwt from 'jsonwebtoken';
-import { uploadImg } from './cloudinaryImg.js'
+// import { uploadImg } from './cloudinaryImg.js' // use for save file on local then cloud
 
 
 export const postBlog = async (req, res) => {
@@ -11,19 +11,29 @@ export const postBlog = async (req, res) => {
         return res.status(400).json({ error: "All fields are required" });
     }
 
-    const imageUrl = uploadImg(req.file.path)
-   
+    // console.log("img path : ", req.file);
+
+    /*    
+    const result = await uploadImg(req.file.path);
+    console.log("from control :", result);
+    const imageUrl = result.secure_url;
+    const publicId = result.public_id;
+     */
+
     try {
         const newBlog = new blog({
             author,
             title,
             content,
-            cover_img_path: imageUrl,
+            cover_img_path: req.file.path,
+            cover_img_id: req.file.filename,
 
         });
 
+
+
         await newBlog.save();
-        res.status(200).json({ massage: 'send the data successfull', imageUrl });
+        res.status(200).json({ massage: 'save  the data on DB successfull' });
 
     } catch (err) {
         console.error(err);
@@ -94,7 +104,7 @@ export const isAdmin = async (req, res) => {
                 sameSite: 'lax',
                 maxAge: 24 * 60 * 60 * 1000
             })
-            .json({ massage: 'you are admin . you can update our blog site' });
+            .json({ massage: 'you are admin . you can update our blog site'  });
 
     } catch (err) {
         console.error(err);

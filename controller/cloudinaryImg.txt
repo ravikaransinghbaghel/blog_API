@@ -1,0 +1,30 @@
+
+// first file save in local folder by multer then file come by patameter load file 
+// file only made for understanding both method 
+// 1. file -> local folder -> cloud
+// 2. file -> direct uplaod on cloud 
+
+
+// import { v2 as cloudinary } from 'cloudinary';
+
+// export const uploadImg = async (loadFile) => {
+
+//     // Configure Cloudinary
+//     cloudinary.config({
+//         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//         api_key: process.env.CLOUDINARY_API_KEY,
+//         api_secret: process.env.CLOUDINARY_API_SECRET,
+//     });
+
+//     // console.log('API_KEY from env:', process.env.CLOUDINARY_API_KEY);
+//     try {
+//         return (await cloudinary.uploader.upload(loadFile, {
+//             resource_type: 'auto',
+//             folder: 'blog_images',
+//         }));
+
+//     } catch (err) {
+//         console.error('Upload error:', err);
+//         throw err;
+//     }
+// }
