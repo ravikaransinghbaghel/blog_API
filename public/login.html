@@ -1,27 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="login-box">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Enter username">
-    <button onclick="login()">Login</button>
-  </div>
 
-  <script>
-    function login() {
-      const user = document.getElementById('username').value;
-      if (user === 'admin') {
-        localStorage.setItem('user', 'admin');
-      } else {
-        localStorage.setItem('user', 'user');
+  <head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
       }
-      window.location.href = 'index.html';
-    }
-  </script>
-</body>
+
+      .form-container {
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .form-container h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+      }
+
+      label {
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+        color: #444;
+      }
+
+      input[type="text"],
+      input[type="file"] {
+        width: 100%;
+        padding: 10px 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus,
+      input[type="file"]:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div class="form-container">
+      <h2>Admin panal</h2>
+      <form id="adminForm">
+        <label for="author">username:</label>
+        <input type="text" name="username" id="author" required>
+
+        <label for="title">password:</label>
+        <input type="text" name="password" id="title" required>
+
+        <button type="submit">submit</button>
+      </form>
+    </div>
+
+    <script>
+
+      let admin = false;
+      function sendData(id, url, page_name) {
+        document.getElementById(id).addEventListener('submit', async function (e) {
+          e.preventDefault();
+
+          const form = e.target;
+          const data = {
+            username: form.username.value,
+            password: form.password.value
+          };
+
+
+          try {
+            const response = await fetch(`https://blog-api-hxsk.onrender.com/api/${url}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            console.log('Server response:', result);
+            admin = await response.ok;
+            if (admin) {
+              form.reset();
+              alert(`${page_name} submitted successfully!`);
+            } else {
+              alert(`Failed to submit ${page_name}\n you are not Admin . This login is for only Admin`);
+            }
+            login()
+          } catch (error) {
+            console.error(`Error submitting ${page_name}:`, error);
+            alert(`Failed to submit ${page_name}`);
+          }
+        });
+      }
+      sendData('adminForm', 'isAdmin', 'login from');
+
+      function login() {
+
+        if (admin) {
+          localStorage.setItem('user', 'admin');
+        } else {
+          localStorage.setItem('user', 'user');
+        }
+
+        window.location.href = 'index.html';
+      }
+    </script>
+  </body>
+
 </html>
