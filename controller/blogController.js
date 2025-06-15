@@ -66,12 +66,13 @@ export const putBlog = async (req, res) => {
 };
 
 export const deleteBlog = async (req, res) => {
-    const id = req.params.id;
+    const { id, publicId } = req.params;
 
     try {
         const deletedBlog = await blog.findByIdAndDelete(id);
+        const deletePost = await cloudinary.uploader.destroy(publicId);
 
-        if (!deletedBlog) {
+        if (!deletedBlog && !deletePost) {
             return res.status(404).json({ message: "Blog not found" });
         }
 
@@ -104,7 +105,7 @@ export const isAdmin = async (req, res) => {
                 sameSite: 'none',
                 maxAge: 24 * 60 * 60 * 1000
             })
-            .json({ massage: 'you are admin . you can update our blog site'  });
+            .json({ massage: 'you are admin . you can update our blog site' });
 
     } catch (err) {
         console.error(err);

@@ -9,7 +9,7 @@ router.post('/isAdmin', isAdmin)
 router.get('/blogs', getBlog);
 router.post('/blogs',isAdminverify, upload.single('cover_img'), postBlog);
 router.put('/update/:id', isAdminverify, putBlog);
-router.delete('/delete/:id', isAdminverify, deleteBlog);
+router.delete('/delete/:id/:publicId', isAdminverify, deleteBlog);
 router.post('/logout', isAdminverify, logoutAdmin);
 
 export default router;

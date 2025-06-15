@@ -60,7 +60,7 @@ function cards(blogs) {
       <div class="card-buttons">
         <button onclick="viewBlog(${blog, blog._id})">Learn More</button>
         ${user === 'admin' ? `<button onclick="editBlog('${blog._id}')">Edit</button>
-                              <button onclick="deleteBlog('${blog._id}')">Delete</button>` : ''}
+                              <button onclick="deleteBlog('${blog._id}','${blog.cover_img_id}')">Delete</button>` : ''}
       </div>
     `;
             blogContainer.appendChild(card);
@@ -83,16 +83,15 @@ function editBlog(id) {
     alert(`Edit blog ${id} - You can implement edit form`);
 }
 
- function deleteBlog(id) {
-     if (!confirm('Are you sure you want to delete this blog?')) return;
-    fetch(`https://blog-api-hxsk.onrender.com/api/delete/${id}`, {
-        method: 'DELETE',
-        credentials: 'include'
+function deleteBlog(id, post_id) {
+    if (!confirm('Are you sure you want to delete this blog?')) return;
+    fetch(`https://blog-api-hxsk.onrender.com/api/delete/${id}/${post_id}`, {
+        method: 'DELETE',  
     })
         .then((res) => res.json())
         .then((data) => {
             console.log(data);
-            
+
             alert(`${data}`);
         })
         .catch(err => {
