@@ -101,7 +101,7 @@ export const isAdmin = async (req, res) => {
             .cookie('blogAdminToken', token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'none',
                 maxAge: 24 * 60 * 60 * 1000
             })
             .json({ massage: 'you are admin . you can update our blog site'  });

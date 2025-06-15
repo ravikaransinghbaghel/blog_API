@@ -2,7 +2,8 @@
 <html lang="en">
 
   <head>
-    <meta charset="UTF-8">
+     <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
       body {
@@ -127,12 +128,15 @@
         });
       }
       sendData('adminForm', 'isAdmin', 'login from');
+      
 
       function login() {
 
         if (admin) {
+          localStorage.setItem('admin', 'true');
           localStorage.setItem('user', 'admin');
         } else {
+          localStorage.setItem('admin', 'false');
           localStorage.setItem('user', 'user');
         }
 
