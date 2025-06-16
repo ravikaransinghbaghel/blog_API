@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Add Blog</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Segoe UI', sans-serif;
+                /* background-color: #f5f6fa; */
+                background-image: url('./BlogBG.jpeg');
+                /* background-position: center; */
+                background-size: cover;
+                -webkit-backdrop-filter: blur(10px);
+                padding: 20px;
+                margin: 0;
+            }
+
+            h2 {
+                text-align: center;
+                color: #000;
+            }
+
+            .form-container {
+                max-width: 600px;
+                background: rgba(255, 255, 255, 0.407);
+                margin: auto;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            label {
+                display: block;
+                margin: 15px 0 5px;
+                font-weight: 600;
+            }
+
+            input[type="text"],
+            textarea,
+            input[type="file"] {
+                width: 100%;
+                padding: 10px;
+                border-radius: 6px;
+                border: 1px solid #cccccc78;
+                font-size: 16px;
+            }
+
+            textarea {
+                resize: vertical;
+                min-height: 120px;
+            }
+
+            .btn {
+                margin-top: 20px;
+                width: 100%;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 12px;
+                font-size: 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+
+            .btn:hover {
+                background-color: #45a049;
+            }
+
+            /* Modal Popup */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.4);
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-content {
+                background-color: #fff;
+                padding: 25px;
+                border-radius: 10px;
+                max-width: 400px;
+                text-align: center;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            .modal-content h3 {
+                margin-bottom: 10px;
+                color: #e53935;
+            }
+
+            .modal-content button {
+                background: #e53935;
+                margin-top: 15px;
+            }
+
+            @media (max-width: 600px) {
+                .form-container {
+                    padding: 20px;
+                }
+            }
+
+            .border {
+                width: 100%;
+                display: flex;
+                justify-content: end;
+            }
+
+            .back-btn:hover {
+                background-color: #45a049;
+            }
+
+            .back-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 16px;
+                margin: 20px;
+                border-radius: 6px;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="form-container">
+            <h2>Add New Blog</h2>
+            <div class="border">
+                <button class="back-btn" onclick="window.location.href='/'">Home</button>
+            </div>
+            <form id="blogForm" enctype="multipart/form-data">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required />
+
+                <label for="author">Author</label>
+                <input type="text" id="author" name="author" required />
+
+                <label for="content">Content</label>
+                <textarea id="content" name="content" required></textarea>
+
+                <label for="coverImage">Cover Image (max 1MB)</label>
+                <input type="file" id="cover_img" name="cover_img" accept="image/*" required />
+
+                <button class="btn" type="submit">Add Blog</button>
+            </form>
+        </div>
+
+        <!-- Modal -->
+        <div id="sizeModal" class="modal">
+            <div class="modal-content">
+                <h3>File Too Large!</h3>
+                <p>Please upload an image smaller than 1 MB.</p>
+                <button onclick="closeModal()">Okay</button>
+            </div>
+        </div>
+
+        <script>
+            const form = document.getElementById('blogForm');
+            const imageInput = document.getElementById('cover_img');
+            const modal = document.getElementById('sizeModal');
+
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+
+            window.addEventListener('click', function (e) {
+                if (e.target === modal) closeModal();
+            });
+
+            document.getElementById('blogForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const fileInput = document.getElementById('cover_img');
+                const file = fileInput.files[0];
+
+                if (file && file.size > 1024 * 1024) {
+                    alert('File size must be less than 1 MB!');
+                    e.preventDefault();
+                    modal.style.display = 'flex';
+                    return;
+                }
+
+                const form = e.target;
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(`/api/blogs`, {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include'
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Blog posted successfully!');
+                        form.reset();
+                        window.location.href = '/';
+                    } else {
+                        alert(data.message || 'Failed to post blog.');
+                        console.error(data);
+                    }
+                } catch (error) {
+                    console.error('Error posting blog:', error);
+                    alert('Failed to post blog.');
+                }
+            });
+
+        </script>
+    </body>
+
+</html>

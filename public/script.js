@@ -1,10 +1,11 @@
-fetch('/api/blogs')
-    .then((res) => res.json())
-    .then((data) => {
-        cards(data);
-        console.log(data);
+const getBlog = async () => {
 
-    })
+    let res = await fetch('/api/blogs');
+    let data = await res.json();
+    cards(data);
+    return data;
+}
+
 
 let admin = localStorage.getItem('admin');
 if (admin === 'true') {
@@ -19,8 +20,8 @@ const nav = document.getElementById('nav');
 // Show "Add Blog" for admin
 const navitem = [
     { navigate: "gotoPage('index')", name: 'Home', show: true },
-    { navigate: "gotoPage('login')", name: 'login', show: !admin },
-    { navigate: "gotoPage('#')", name: 'Add blog', show: admin },
+    { navigate: "gotoPage('login')", name: 'desktop', show: !admin },
+    { navigate: "gotoPage('addBlog')", name: 'Add blog', show: admin },
     { navigate: "sendData('logout', 'logout')", name: 'logout', show: admin },
 ]
 
@@ -47,6 +48,7 @@ function formatDateTime(blog_date) {
 function cards(blogs) {
     if (blogContainer) {
         blogs.forEach(blog => {
+
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
@@ -58,7 +60,7 @@ function cards(blogs) {
         <p>${blog.content.slice(0, 60)}...</p>
       </div>
       <div class="card-buttons">
-        <button onclick="viewBlog(${blog, blog._id})">Learn More</button>
+        <button onclick="viewBlog('${blog._id}')">Learn More</button>
         ${user === 'admin' ? `<button onclick="editBlog('${blog._id}')">Edit</button>
                               <button onclick="deleteBlog('${blog._id}','${blog.cover_img_id}')">Delete</button>` : ''}
       </div>
@@ -69,10 +71,16 @@ function cards(blogs) {
 }
 
 // Handle Learn More
-function viewBlog(blogs, id) {
-    const blog = blogs.find(b => b.id === id);
+async function viewBlog(id) {
+    const BlogData = await getBlog();
+    // console.log(BlogData);
+    const blog = BlogData.find(item => item._id === id)
+
+    // console.log('blog:', blog);
+
     localStorage.setItem('currentBlog', JSON.stringify(blog));
     window.location.href = 'blog.html';
+
 }
 
 function gotoPage(page) {
@@ -85,14 +93,13 @@ function editBlog(id) {
 
 function deleteBlog(id, post_id) {
     if (!confirm('Are you sure you want to delete this blog?')) return;
-    fetch(`https://blog-api-hxsk.onrender.com/api/delete/${id}/${post_id}`, {
-        method: 'DELETE',  
+    fetch(`/api/delete/${id}/${post_id}`, {
+        method: 'DELETE',
     })
-        .then((res) => res.json())
+        .then(res => res.json())
         .then((data) => {
-            console.log(data);
-
-            alert(`${data}`);
+            // console.log(data);
+            alert(`${data.message}`);
         })
         .catch(err => {
             console.error(err);
@@ -103,7 +110,7 @@ function deleteBlog(id, post_id) {
 async function sendData(url, page_name) {
 
     try {
-        await fetch(`https://blog-api-hxsk.onrender.com/api/${url}`, {
+        await fetch(`/api/${url}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -119,3 +126,5 @@ async function sendData(url, page_name) {
     }
 
 }
+
+getBlog()
