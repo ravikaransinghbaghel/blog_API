@@ -61,12 +61,21 @@
                     margin: 20px;
                     padding: 20px;
                 }
+
+                textarea {
+                    width: 100%;
+                    min-height: 120px;
+                    resize: none;
+                    overflow: hidden;
+                    font-size: 16px;
+                    padding: 10px;
+                }
             }
         </style>
     </head>
 
     <body>
-        <button class="back-btn" onclick="window.location.href='index.html'">← Home</button>
+        <button class="back-btn" onclick="window.location.href='/'">← Home</button>
 
         <div class="update-form-container">
             <h2>Update Blog</h2>
@@ -80,7 +89,7 @@
                 <input type="text" id="author" name="author" required />
 
                 <label for="content">Content</label>
-                <textarea id="content" name="content" rows="6" required></textarea>
+                <textarea id="content" name="content" oninput="autoResizeTextarea(this)" required></textarea>
 
                 <!-- <label for="coverImage">Cover Image</label>
                 <input type="file" id="cover_img" name="cover_img" /> -->
@@ -90,6 +99,10 @@
         </div>
 
         <script>
+            function autoResizeTextarea(el) {
+                el.style.height = 'auto';
+                el.style.height = el.scrollHeight + 'px';
+            }
             document.addEventListener('DOMContentLoaded', () => {
                 const blog = JSON.parse(localStorage.getItem('currentBlog'));
                 if (!blog) return alert('No blog data found.');
@@ -97,13 +110,15 @@
                 document.getElementById('blogId').value = blog._id;
                 document.getElementById('title').value = blog.title;
                 document.getElementById('author').value = blog.author;
-                document.getElementById('content').value = blog.content;
+                const contentField = document.getElementById('content');
+                contentField.value = blog.content;
+                autoResizeTextarea(contentField);
             });
 
             document.getElementById('updateForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const id = document.getElementById('blogId').value;
-                
+
                 const form = e.target;
                 // const formData = new FormData(form);
                 const data = {
@@ -124,7 +139,7 @@
 
                     const result = await res.json();
                     alert(result.message || 'Blog updated!');
-                    window.location.href = 'index.html';
+                    window.location.href = '/';
                 } catch (err) {
                     console.error('Update failed', err);
                     alert('Failed to update blog.');
