@@ -1,4 +1,4 @@
-const getBlog = async () => {
+const fetchBlog = async () => {
 
     let res = await fetch('/api/blogs');
     let data = await res.json();
@@ -56,7 +56,7 @@ function cards(blogs) {
       <div class="card-content">
         <h3>${blog.title}</h3>
         <p><b>Author:</b> ${blog.author}</p>
-        <p><b>Date:</b> ${formatDateTime(blog.createdAt)}</p>
+        <p><b>Date:</b> ${formatDateTime(blog.updatedAt)}</p>
         <p>${blog.content.slice(0, 60)}...</p>
       </div>
       <div class="card-buttons">
@@ -70,25 +70,24 @@ function cards(blogs) {
     }
 }
 
-// Handle Learn More
-async function viewBlog(id) {
-    const BlogData = await getBlog();
-    // console.log(BlogData);
-    const blog = BlogData.find(item => item._id === id)
-
-    // console.log('blog:', blog);
-
-    localStorage.setItem('currentBlog', JSON.stringify(blog));
-    window.location.href = 'blog.html';
-
-}
-
 function gotoPage(page) {
     window.location.href = `${page}.html`;
 }
 
-function editBlog(id) {
-    alert(`Edit blog ${id} - You can implement edit form`);
+async function getBlog(id) {
+    const BlogData = await fetchBlog();
+    const blog = BlogData.find(item => item._id === id)
+    localStorage.setItem('currentBlog', JSON.stringify(blog));
+}
+
+async function viewBlog(id) {
+    await getBlog(id)
+    gotoPage('blog')
+}
+
+async function editBlog(id) {
+    await getBlog(id)
+    gotoPage('updateBlog')
 }
 
 function deleteBlog(id, post_id) {
@@ -127,4 +126,4 @@ async function sendData(url, page_name) {
 
 }
 
-getBlog()
+fetchBlog()

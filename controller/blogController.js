@@ -58,7 +58,7 @@ export const putBlog = async (req, res) => {
 
     try {
         const updateBlogs = await blog.findByIdAndUpdate(id, { author, title, content }, { new: true });
-        res.status(200).json(updateBlogs);
+        res.status(200).json({message:"blog is update successfully"});
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Error fetching blogs" });
