@@ -58,7 +58,7 @@ export const putBlog = async (req, res) => {
 
     try {
         const updateBlogs = await blog.findByIdAndUpdate(id, { author, title, content }, { new: true });
-        res.status(200).json({message:"blog is update successfully"});
+        res.status(200).json({ message: "blog is update successfully" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Error fetching blogs" });
@@ -66,7 +66,8 @@ export const putBlog = async (req, res) => {
 };
 
 export const deleteBlog = async (req, res) => {
-    const { id, publicId } = req.params;
+    const id = req.params.id;
+    const publicId = req.params.publicId;
 
     try {
         const deletedBlog = await blog.findByIdAndDelete(id);
