@@ -92,8 +92,15 @@ async function editBlog(id) {
 
 function deleteBlog(id, post_id) {
     if (!confirm('Are you sure you want to delete this blog?')) return;
-    fetch(`/api/delete/${id}/${post_id}`, {
+    const publicId = encodeURIComponent(post_id);
+
+    fetch(`/api/delete/${id}`, {
         method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ publicId }),
+        credentials: 'include'
     })
         .then(res => res.json())
         .then((data) => {

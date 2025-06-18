@@ -1,6 +1,7 @@
 import blog from "../model/blog.js";
 import admin from "../model/admin.js";
 import jwt from 'jsonwebtoken';
+import { v2 as cloudinary } from 'cloudinary';
 // import { uploadImg } from './cloudinaryImg.js' // use for save file on local then cloud
 
 
@@ -66,8 +67,8 @@ export const putBlog = async (req, res) => {
 };
 
 export const deleteBlog = async (req, res) => {
-    const id = req.params.id;
-    const publicId = req.params.publicId;
+    const { id } = req.params;
+    const { publicId } = req.body;
 
     try {
         const deletedBlog = await blog.findByIdAndDelete(id);
