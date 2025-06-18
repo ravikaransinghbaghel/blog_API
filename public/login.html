@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login || only for admin right now</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        /* background-color: #f0f2f5; */
+        background-image: url('./BlogBG.jpeg');
+        /* background-position: center; */
+        background-size: cover;
+        -webkit-backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .form-container {
+        background-color: #ffffff81;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 500px;
+      }
+
+      .form-container h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 25px;
+      }
+
+      label {
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+        color: #444;
+      }
+
+      input[type="text"],
+      input[type="file"] {
+        width: 90%;
+        padding: 10px 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus,
+      input[type="file"]:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+
+      .back-btn:hover {
+        background-color: #45a049;
+      }
+
+      .back-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 16px;
+        margin: 20px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #45a049;
+      }
+
+      .border {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div class="form-container">
+      <div class="border">
+        <button class="back-btn" onclick="window.location.href='/'"> Home</button>
+      </div>
+      <h2>Admin panel</h2>
+      <form id="adminForm">
+        <label for="author">username:</label>
+        <input type="text" name="username" id="author" required>
+
+        <label for="title">password:</label>
+        <input type="text" name="password" id="title" required>
+
+        <button class="btn" type="submit">submit</button>
+      </form>
+
+    </div>
+
+    <script>
+      let admin = false;
+      function sendData(id, url, page_name) {
+        document.getElementById(id).addEventListener('submit', async function (e) {
+          e.preventDefault();
+
+          const form = e.target;
+          const data = {
+            username: form.username.value,
+            password: form.password.value
+          };
+
+
+          try {
+            const response = await fetch(`/api/${url}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            console.log('Server response:', result);
+            admin = await response.ok;
+            if (admin) {
+              form.reset();
+              alert(`${page_name} submitted successfully!`);
+            } else {
+              alert(`Failed to submit ${page_name}\n you are not Admin . This login is for only Admin`);
+            }
+            login()
+          } catch (error) {
+            console.error(`Error submitting ${page_name}:`, error);
+            alert(`Failed to submit ${page_name}`);
+          }
+        });
+      }
+      sendData('adminForm', 'isAdmin', 'login from');
+
+
+      function login() {
+
+        if (admin) {
+          localStorage.setItem('admin', 'true');
+          localStorage.setItem('user', 'admin');
+        } else {
+          localStorage.setItem('admin', 'false');
+          localStorage.setItem('user', 'user');
+        }
+
+        window.location.href = 'index.html';
+      }
+    </script>
+  </body>
+
+</html>
