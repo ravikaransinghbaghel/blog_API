@@ -106,6 +106,8 @@ function deleteBlog(id, post_id) {
         .then((data) => {
             // console.log(data);
             alert(`${data.message}`);
+            gotoPage('/');
+            window.location.reload();
         })
         .catch(err => {
             console.error(err);
