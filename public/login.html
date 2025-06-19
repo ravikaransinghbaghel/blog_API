@@ -194,10 +194,10 @@
             if (admin) {
               form.reset();
               alert(`${page_name} submitted successfully!`);
+              login();
             } else {
               alert(`Failed to submit ${page_name}\n You are not Admin. This login is only for Admin`);
             }
-            login();
           } catch (error) {
             console.error(`Error submitting ${page_name}:`, error);
             alert(`Failed to submit ${page_name}`);
