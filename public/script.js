@@ -22,6 +22,7 @@ const navitem = [
     { navigate: "gotoPage('index')", name: 'Home', show: true },
     { navigate: "gotoPage('login')", name: 'desktop', show: !admin },
     { navigate: "gotoPage('addBlog')", name: 'Add blog', show: admin },
+    { navigate: "sendEmail()", name: 'update details', show: admin },
     { navigate: "sendData('logout', 'logout')", name: 'logout', show: admin },
 ]
 
@@ -134,5 +135,19 @@ async function sendData(url, page_name) {
     }
 
 }
+
+const sendEmail = async () => {
+    const confirmSend = confirm('Are you sure you want to send an email to update your details?');
+    if (!confirmSend) return;
+    const res = await fetch('/api/sendEmailtoUpdate');
+
+    const data = await res.json();
+    if (data.ok === false) {
+        alert(data.error);
+    } else {
+        alert('Email sent successfully for update admin details!');
+    }
+}
+
 
 fetchBlog()

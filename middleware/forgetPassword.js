@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-export const isAdminverify = (req, res, next) => {
+export const forgetPasswordToken = (req, res, next) => {
 
-    const token = req.cookies.blogAdminToken;
+    const token = req.cookies.forgetPasswordToken;
 
     if (!token) return res.status(401).json({ error: 'Not authenticated' });
 

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Update Admin Details</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-image: url("./BlogBG.jpeg");
+                background-position: center;
+                background-size: cover;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                margin: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+            }
+
+            .container {
+                background-color: rgba(255, 255, 255, 0.35);
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                max-width: 400px;
+                width: 100%;
+            }
+
+            .backHome {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 10px;
+            }
+
+            .back-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 5px 16px;
+                margin: 5px;
+                border-radius: 6px;
+                border: none;
+                cursor: pointer;
+            }
+
+            .back-btn:hover {
+                background-color: #45a049;
+            }
+
+            h2 {
+                text-align: center;
+                font-size: 24px;
+                color: #333;
+                margin-bottom: 20px;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            label {
+                font-weight: 600;
+                color: #000;
+                margin-bottom: 5px;
+                display: block;
+            }
+
+            input {
+                padding: 10px 12px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                font-size: 16px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            input:focus {
+                outline: none;
+                border-color: #4CAF50;
+                box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            }
+
+            button[type="submit"] {
+                background-color: #4CAF50;
+                color: white;
+                font-weight: 600;
+                padding: 10px;
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.2s ease-in-out;
+            }
+
+            button[type="submit"]:hover {
+                background-color: #45a049;
+            }
+
+            #status {
+                text-align: center;
+                font-size: 14px;
+                margin-top: 10px;
+                color: rgb(83, 1, 1);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="backHome">
+                <button class="back-btn" onclick="window.location.href='/'">Home</button>
+            </div>
+            <h2>Update Admin Details</h2>
+            <form id="updateForm">
+                <div>
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required />
+                </div>
+
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required />
+                </div>
+
+                <div>
+                    <label for="password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" />
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" />
+                </div>
+
+                <button type="submit">Update</button>
+            </form>
+            <p id="status"></p>
+        </div>
+
+        <script>
+            const form = document.getElementById('updateForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (form.password.value !== form.confirm_password.value) {
+                    document.getElementById('status').textContent = 'Passwords do not match!';
+                    return;
+                }
+                const data = {
+                    name: form.name.value,
+                    email: form.email.value,
+                    password: form.password.value,
+                    isrecieveEmail: false,
+                };
+
+                try {
+                    const res = await fetch('/api/updateAdmin', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(data)
+                    });
+                    const result = await res.json();
+                    document.getElementById('status').textContent = result.message || 'Update successful!';
+                    if (result.success) {
+                        form.reset();
+                    }
+
+                } catch (err) {
+                    document.getElementById('status').textContent = 'Update failed!';
+                    console.error(err);
+                }
+            });
+        </script>
+    </body>
+
+</html>

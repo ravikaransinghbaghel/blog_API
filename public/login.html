@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
   <head>
@@ -7,9 +8,7 @@
     <style>
       body {
         font-family: 'Segoe UI', sans-serif;
-        /* background-color: #f0f2f5; */
         background-image: url('./BlogBG.jpeg');
-        /* background-position: center; */
         background-size: cover;
         -webkit-backdrop-filter: blur(10px);
         display: flex;
@@ -42,7 +41,8 @@
       }
 
       input[type="text"],
-      input[type="file"] {
+      input[type="email"],
+      input[type="tel"] {
         width: 90%;
         padding: 10px 12px;
         margin-bottom: 20px;
@@ -52,39 +52,38 @@
         transition: border-color 0.3s;
       }
 
-      input[type="text"]:focus,
-      input[type="file"]:focus {
+      input:focus {
         border-color: #007bff;
         outline: none;
       }
 
-      .back-btn:hover {
+      .btn,
+      .back-btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .btn {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+      }
+
+      .btn:hover {
         background-color: #45a049;
       }
 
       .back-btn {
         background-color: #4CAF50;
         color: white;
-        padding: 10px 16px;
-        margin: 20px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
+        margin: 5px;
       }
 
-      .btn {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-
-      .btn:hover {
+      .back-btn:hover {
         background-color: #45a049;
       }
 
@@ -93,30 +92,83 @@
         display: flex;
         justify-content: end;
       }
-    </style>
 
+      .forgot {
+        text-align: right;
+        margin-top: -15px;
+        margin-bottom: 15px;
+      }
+
+      .forgot a {
+        font-size: 14px;
+        color: #007bff;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .forgot a:hover {
+        text-decoration: underline;
+      }
+
+      #forgotForm {
+        display: none;
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      .message {
+        font-size: 14px;
+        color: green;
+        margin-top: 10px;
+        text-align: center;
+      }
+    </style>
   </head>
 
   <body>
     <div class="form-container">
       <div class="border">
-        <button class="back-btn" onclick="window.location.href='/'"> Home</button>
+        <button class="back-btn" onclick="window.location.href='/'">Home</button>
       </div>
-      <h2>Admin panel</h2>
+      <h2>Admin Panel</h2>
+
+      <!-- Login Form -->
       <form id="adminForm">
-        <label for="author">username:</label>
+        <label for="author">Username:</label>
         <input type="text" name="username" id="author" required>
 
-        <label for="title">password:</label>
+        <label for="title">Password:</label>
         <input type="text" name="password" id="title" required>
 
-        <button class="btn" type="submit">submit</button>
+        <div class="forgot">
+          <a onclick="showForgotForm()">Forgot password?</a>
+        </div>
+
+        <button class="btn" type="submit">Submit</button>
       </form>
 
+      <!-- Forgot Password Form -->
+      <form id="forgotForm">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="forgotEmail" required>
+
+        <label for="phone">Mobile No:</label>
+        <input type="tel" name="mob_no" id="forgotPhone" required pattern="[0-9]{10}">
+
+        <div class="forgot">
+          <a onclick="showLoginForm()">Again Login ?</a>
+        </div>
+
+        <button class="btn" type="submit">Send Reset Email</button>
+      </form>
+
+      <p class="message" id="forgotMsg"></p>
     </div>
 
     <script>
       let admin = false;
+
       function sendData(id, url, page_name) {
         document.getElementById(id).addEventListener('submit', async function (e) {
           e.preventDefault();
@@ -126,7 +178,6 @@
             username: form.username.value,
             password: form.password.value
           };
-
 
           try {
             const response = await fetch(`/api/${url}`, {
@@ -144,20 +195,19 @@
               form.reset();
               alert(`${page_name} submitted successfully!`);
             } else {
-              alert(`Failed to submit ${page_name}\n you are not Admin . This login is for only Admin`);
+              alert(`Failed to submit ${page_name}\n You are not Admin. This login is only for Admin`);
             }
-            login()
+            login();
           } catch (error) {
             console.error(`Error submitting ${page_name}:`, error);
             alert(`Failed to submit ${page_name}`);
           }
         });
       }
-      sendData('adminForm', 'isAdmin', 'login from');
 
+      sendData('adminForm', 'isAdmin', 'Login Form');
 
       function login() {
-
         if (admin) {
           localStorage.setItem('admin', 'true');
           localStorage.setItem('user', 'admin');
@@ -165,9 +215,49 @@
           localStorage.setItem('admin', 'false');
           localStorage.setItem('user', 'user');
         }
-
-        window.location.href = 'index.html';
+        window.location.href = '/';
       }
+
+      function showForgotForm() {
+        document.getElementById('forgotForm').style.display = 'block';
+        document.getElementById('adminForm').style.display = 'none';
+      }
+      function showLoginForm() {
+        document.getElementById('forgotForm').style.display = 'none';
+        document.getElementById('adminForm').style.display = 'block';
+      }
+
+      // Forgot Password Submit
+      document.getElementById('forgotForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const confirmSend = confirm('Are you sure you want to send a reset email?');
+        if (!confirmSend) return;
+
+        const email = document.getElementById('forgotEmail').value;
+        const mob_no = document.getElementById('forgotPhone').value;
+
+        try {
+          const res = await fetch('/api/sendEmailtoForget', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, mob_no })
+          });
+          const result = await res.json();
+          if (!res.ok) {
+            throw new Error(result.message || 'Failed to send reset email');
+
+          } else {
+            document.getElementById('forgotMsg').textContent = result.message || 'Reset email sent!';
+            document.getElementById('forgotForm').reset();
+            window.location.href = '/'
+          }
+        } catch (error) {
+          document.getElementById('forgotMsg').textContent = 'Failed to send reset email.';
+          console.error(error);
+        }
+      });
     </script>
   </body>
 

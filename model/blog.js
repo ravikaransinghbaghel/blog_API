@@ -22,6 +22,11 @@ const blogScheema = new mongoose.Schema({
         type: String,
         require: true
     },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        require: true
+    },
 
 }, { timestamps: true });
 

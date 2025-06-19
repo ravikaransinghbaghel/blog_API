@@ -138,8 +138,13 @@
                     });
 
                     const result = await res.json();
-                    alert(result.message || 'Blog updated!');
-                    window.location.href = '/';
+                    if (!res.ok) {
+                        alert(result.message || 'Failed to update blog\nyou are not authorized to update this blog');
+                    } else {
+                        alert(result.message || 'Blog updated!');
+                        window.location.href = '/';
+                    }
+
                 } catch (err) {
                     console.error('Update failed', err);
                     alert('Failed to update blog.');
